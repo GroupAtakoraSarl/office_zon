@@ -17,6 +17,11 @@
                             <input type="text" class="form-control" id="name" name="name" value="{{ isset($reserve) ? $reserve->name : '' }}">
                         </div>
 
+                        <div class="form-group">
+                            <label for="admin_name">code_maison</label>
+                            <input type="text" class="form-control" id="item_code" name="item_code" value="{{ isset($reserve) ? $reserve->item_code : '' }}">
+                        </div>
+
 
                         <div class="form-group">
                             <label for="reservation_address">address</label>

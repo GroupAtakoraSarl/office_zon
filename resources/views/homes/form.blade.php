@@ -89,13 +89,14 @@
                             var valeur2Input = document.getElementById("valeur2");
                             var positionInput = document.getElementById("position");
 
+
                             valeur1Input.addEventListener("input", updateQuartier);
                             valeur2Input.addEventListener("input", updateQuartier);
 
                             function updateQuartier() {
                                 var valeur1 = valeur1Input.value;
                                 var valeur2 = valeur2Input.value;
-                                var newValue = "LNG"+ valeur1 + "LAT" + valeur2;
+                                var newValue = "LNG"+ valeur1 + ",LAT" + valeur2;
 
                                 if (!newValue.trim() && isset($home) && ($home=>position)) {
                                     newValue = $home => position;

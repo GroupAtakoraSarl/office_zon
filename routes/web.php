@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
             ['AdminCount' => $AdminCount,'ReserCount' => $ReserCount,'VisiterCount' => $VisiterCount]);
     })->name('dashboard');
 
+
     Route::controller(homeController::class)->prefix('home')->group(function () {
         Route::get('', 'index')->name('homes');
         Route::get('add', 'add')->name('homes.add');

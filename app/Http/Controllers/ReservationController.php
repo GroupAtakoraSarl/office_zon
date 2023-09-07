@@ -35,6 +35,7 @@ class ReservationController extends Controller
     {
         $resetValidation = $request->validate([
             "name" => ["required", "string"],
+            "item_code" => ["required", "string"],
             "address" => ["required", "email"],
             "num_tel" => ["required", "integer"],
             "date_arr" => ["required", "date_format:d-m-y"],
@@ -44,6 +45,7 @@ class ReservationController extends Controller
 
         $reservations = reservation::create([
             "name" => $resetValidation["name"],
+            "item_code" => $resetValidation["item_code"],
             "address" => $resetValidation["address"],
             "num_tel" => $resetValidation["num_tel"],
             "date_arr" => $resetValidation["date_arr"],
@@ -102,6 +104,7 @@ class ReservationController extends Controller
     {
         $data = [
             'name' => $request->name,
+            'item_code' => $request->item_code,
             'address' => $request->address,
             'num_tel' => $request->num_tel,
             'date_arr' => $request->date_arr,
@@ -121,6 +124,7 @@ class ReservationController extends Controller
     {
         $data = [
             'name' => $request->name,
+            'item_code' => $request->item_code,
             'address' => $request->address,
             'num_tel' => $request->num_tel,
             'date_arr' => $request->date_arr,

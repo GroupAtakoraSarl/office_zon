@@ -15,6 +15,7 @@ class AdminController extends Controller
     public  function  inscription (Request $request){
 
         $adminData = $request->validate([
+
             "name" => ["required", "string", "min:2", "max:255"],
             "prenom" => ["required", "string", "min:2", "max:255"],
             "email" => ["required", "email", "unique:admins,email"],

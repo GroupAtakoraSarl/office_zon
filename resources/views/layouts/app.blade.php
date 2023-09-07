@@ -67,6 +67,8 @@
 </a>
 
 <!-- Bootstrap core JavaScript-->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsDu3_rx4tO81YczzsN1qukrawSrngk3s&libraries&libraries=places&callback=initMap" async defer></script>
+
 <script src="{{ asset('https://startbootstrap.github.io/startbootstrap-sb-admin-2/vendor/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('https://startbootstrap.github.io/startbootstrap-sb-admin-2/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- Core plugin JavaScript-->

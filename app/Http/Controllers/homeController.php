@@ -88,12 +88,18 @@ class homeController extends Controller
             'bathrooms' => $request->bathrooms,
             'area' => $request->area,
             'model' => $request->model,
-            'path' => $request->path,
             'category' => $request->id_category,
             'price' => $request->price,
             'quartier'=>$request->quartier,
             'position'=>$request->position
         ];
+
+        if ($request->hasFile('path')) {
+            $imagePath = $request->file('path')->store('images', 'public');
+            $data['path'] = $imagePath;
+        } else {
+            $data['path'] = 'default.jpg';
+        }
 
         homes::find($id)->update($data);
 

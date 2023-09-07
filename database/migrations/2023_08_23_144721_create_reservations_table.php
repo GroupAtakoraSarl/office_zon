@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->string("name")->nullable(false);
+            $table->string("item_code")->nullable(false);
             $table->string("address")->nullable(false);
             $table->integer("num_tel")->nullable(false);
             $table->integer("duration")->nullable(false);

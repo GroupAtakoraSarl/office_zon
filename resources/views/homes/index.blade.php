@@ -22,7 +22,7 @@
                         <th>Salles de bains </th>
                         <th>Surface </th>
                         <th>model </th>
-                        <th>Chemin de l'image </th>
+                        <th>l'image </th>
                         <th>Catégorie</th>
                         <th>Quartier</th>
                         <th>Prix</th>
@@ -37,17 +37,17 @@
                     @foreach ($data as $row)
                         <tr>
                             <th>{{ $no++ }}</th>
-                            <td>{{ $row->item_code }}</td>
-                            <td>{{ $row->localisation }}</td>
-                            <td>{{ $row->description }}</td>
-                            <td>{{ $row->bathrooms }}</td>
-                            <td>{{ $row->area }}</td>
-                            <td>{{ $row->model }}</td>
-                            <td>{{ $row->path }}</td>
-                            <td>{{ $row->category }}</td>
-                            <td>{{ $row->quartier }}</td>
-                            <td>{{ $row->price }}</td>
-                            <td>{{ $row->position }}</td>
+                            <td data-item_code="{{ $row->item_code }}">{{ $row->item_code }}</td>
+                            <td data-localisation="{{ $row->localisation }}">{{ $row->localisation }}</td>
+                            <td data-description="{{ $row->description }}">{{ $row->description }}</td>
+                            <td data-bathrooms="{{ $row->bathrooms }}">{{ $row->bathrooms }}</td>
+                            <td data-area="{{ $row->area }}">{{ $row->area }}</td>
+                            <td data-model="{{ $row->model }}">{{ $row->model }}</td>
+                            <td data-image-url="{{ $row->path }}"><img src="http://127.0.0.1:8000/storage/{{ $row->path }}" width="80"></td>
+                            <td data-category="{{ $row->category }}">{{ $row->category }}</td>
+                            <td data-quartier="{{ $row->quartier }}">{{ $row->quartier }}</td>
+                            <td data-price="{{ $row->price }}">{{ $row->price }}</td>
+                            <td data-position="{{ $row->position }}">{{ $row->position }}</td>
                             @if (auth()->user()->level == 'Admin')
                                 <td>
                                     <a href="{{ route('homes.edit', $row->id) }}" class="btn btn-warning">Edit</a>
@@ -56,6 +56,36 @@
                             @endif
                         </tr>
                     @endforeach
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var positionCells = document.querySelectorAll('[data-position]');
+
+                            positionCells.forEach(function(cell) {
+                                var position = cell.getAttribute('data-position');
+                                var [lng, lat] = extractLngLatFromPosition(position);
+
+                                updateMap(parseFloat(lat), parseFloat(lng));
+                            });
+
+                            function extractLngLatFromPosition(position) {
+
+                                var lng = position.match(/LNG(\d+)/)[1];
+                                var lat = position.match(/,LAT(\d+)/)[1];
+                                return [lng, lat];
+                            }
+
+
+                            function updateMap(lat, lng) {
+                                if (map) {
+                                    const myLatLng = { lat: lat, lng: lng };
+                                    map.setCenter(myLatLng);
+                                    marker.setPosition(myLatLng);
+                                }
+                            }
+                        });
+                    </script>
+
                     </tbody>
                 </table>
             </div>

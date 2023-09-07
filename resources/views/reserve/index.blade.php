@@ -14,6 +14,7 @@
                     <tr>
                         <th>No</th>
                         <th>name </th>
+                        <th>code maison </th>
                         <th>address </th>
                         <th>num_tel </th>
                         <th>date_arr </th>
@@ -30,6 +31,7 @@
                         <tr>
                             <th>{{ $no++ }}</th>
                             <td>{{ $row->name }}</td>
+                            <td>{{ $row->item_code }}</td>
                             <td>{{ $row->address }}</td>
                             <td>{{ $row->num_tel }}</td>
                             <td>{{ $row->date_arr }}</td>

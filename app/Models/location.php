@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class reservation extends Model
+class location extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name', 'address', 'num_tel', 'date_arr', 'duration','item_code'
+        'location_title', 'coords_lat', 'coords_lng', 'ville', 'pays'
     ];
 }
