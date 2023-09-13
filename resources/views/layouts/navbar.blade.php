@@ -137,9 +137,8 @@
 </style>
 <div id="map"></div>
 <script type="text/javascript">
-    var map;  // Variable globale pour stocker l'instance de la carte google maps
-    var marker;  // Variable globale pour stocker le marqueur
-
+    var map;
+    var marker;
 
     function showMap(lat, lng) {
         var myLatLng = {
@@ -150,11 +149,23 @@
             zoom: 5,
             center: myLatLng,
         });
-        new google.maps.Marker({
+
+        var infoWindowContent = "Bienvenue sur notre siège !";
+
+        var marker = new google.maps.Marker({
             position: myLatLng,
             map: map,
         });
+
+        var infoWindow = new google.maps.InfoWindow({
+            content: infoWindowContent
+        });
+
+        marker.addListener("click", function() {
+            infoWindow.open(map, marker);
+        });
     }
+
 
     function initMap() {
 
@@ -164,8 +175,8 @@
     }
 
     document.addEventListener("DOMContentLoaded", function (callback) {
+        initMap();
         var positionCells = document.querySelectorAll('[data-position]');
-
 
         if (positionCells.length > 0) {
             var firstPosition = positionCells[0].getAttribute('data-position');
@@ -176,35 +187,73 @@
                 center: { lat: parseFloat(firstLat), lng: parseFloat(firstLng) },
             });
 
-            var markers = [];
-            var infoWindow = new google.maps.InfoWindow(); // Déclarez infoWindow en dehors de la boucle
 
-            positionCells.forEach(function (cell) {
+            var markers = [];
+            var infoWindow = new google.maps.InfoWindow();
+
+
+            var elements = document.querySelectorAll('[data-id]');
+            var id = Array.from(elements).map(function (element) {
+                return element.getAttribute('data-id');
+            });
+            console.log(id);
+
+            positionCells.forEach(function (cell, index) {
+                // Récupérez l'ID pour cette itération de la boucle
+                var houseId = id[index];
+
                 var position = cell.getAttribute('data-position');
                 var [lng, lat] = extractLngLatFromPosition(position);
 
-                marker = new google.maps.Marker({
+                var marker = new google.maps.Marker({
                     position: { lat: parseFloat(lat), lng: parseFloat(lng) },
                     map: map,
                 });
 
-                marker.addListener('click', function () {
-                    var content = getInfoWindowContent(cell);
-                    infoWindow.setContent(content);
-                    console.log("Marqueur cliqué !");
-                    console.log("Cellule associée :", cell);
-                    infoWindow.open(map, marker);
+                google.maps.event.addListener(marker, 'click', function () {
+                    // Utilisation de la requête AJAX
+                    $.ajax({
+                        url: '/api/show/' + houseId,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            var content = getInfoWindowContent(data);
+                            infoWindow.setContent(content);
+                            infoWindow.open(map, marker);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
                 });
 
                 markers.push(marker);
             });
+
+
         } else {
             var defaultLat = 7.281255;
             var defaultLng = 1.039647;
 
             showMap(defaultLat, defaultLng);
         }
+
     });
+
+    // ...
+
+    function getInfoWindowContent(data) {
+        return `
+    <div>
+        <strong>Item Code:</strong> ${data.item_code}<br>
+        <strong>Localisation:</strong> ${data.localisation}<br>
+        <strong>Description:</strong> ${data.description}<br>
+        <strong><img src="storage/${data.path}" width="80" ><br></strong>
+        <!-- Ajoutez d'autres champs de données ici -->
+    </div>`;
+    }
+
+
 
     function extractLngLatFromPosition(position) {
         var lng = parseFloat(position.match(/LNG(-?\d+\.\d+),LAT(-?\d+\.\d+)/)[1]);
@@ -212,34 +261,6 @@
         return [lng, lat];
     }
 
-    function getInfoWindowContent(cell) {
-        var localisation = cell.getAttribute('data-localisation') || '';
-        var description = cell.getAttribute('data-description') || '';
-        var bathrooms = cell.getAttribute('data-bathrooms') || '';
-        var area = cell.getAttribute('data-area') || '';
-        var position = cell.getAttribute('data-position') || '';
-        var model = cell.getAttribute('data-model') || '';
-        var imageUrl = cell.getAttribute('data-image-url') || '';
-        var category = cell.getAttribute('data-category') || '';
-        var quartier = cell.getAttribute('data-quartier') || '';
-        var price = cell.getAttribute('data-price') || '';
-        var item_code = cell.getAttribute('data-item_code') || '';
-
-        return `
-        <div>
-            <strong>Localisation:</strong> ${localisation}<br>
-            <strong>Description:</strong> ${description}<br>
-            <strong>Bathrooms:</strong> ${bathrooms}<br>
-            <strong>Area:</strong> ${area}<br>
-            <strong>Position:</strong> ${position}<br>
-            <strong>Model:</strong> ${model}<br>
-            <img src="${imageUrl}" width="80"><br>
-            <strong>Category:</strong> ${category}<br>
-            <strong>Quartier:</strong> ${quartier}<br>
-            <strong>Price:</strong> ${price}<br>
-            <strong>Item Code:</strong> ${item_code}<br>
-        </div>`;
-    }
 
 
 </script>

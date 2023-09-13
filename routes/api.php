@@ -24,6 +24,8 @@ Route::post('/Admin/connexion',[AdminController::class,'connexion']);
 
 Route::get('/Admin/houses',[homeController::class,'store']);
 
+Route::get('/show/{id}',[homeController::class,'show']);
+
 Route::post('/reservations/create',[ReservationController::class,"store"]);
 Route::get('/reservations/show',[ReservationController::class,"index"]);
 Route::delete('/reservations/{id}',[ReservationController::class,"destroy"]);

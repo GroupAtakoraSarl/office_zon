@@ -7,6 +7,7 @@ use App\Http\Controllers\viewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\terrainMaps;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,16 +20,13 @@ use App\Http\Controllers\AdminController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('register', 'register')->name('register');
     Route::post('register', 'registerSave')->name('register.save');
 
-    Route::get('login', 'login')->name('login');
-    Route::post('login', 'loginAction')->name('login.action');
+    Route::get('/', 'login')->name('login');
+    Route::post('/', 'loginAction')->name('login.action');
 
     Route::get('logout', 'logout')->middleware('auth')->name('logout');
 });
@@ -74,6 +72,8 @@ Route::middleware('auth')->group(function () {
 
 
 
+
+
     Route::controller(categoryController::class)->prefix('category')->group(function () {
 
         Route::get('', 'index')->name('category');
@@ -100,6 +100,15 @@ Route::middleware('auth')->group(function () {
         Route::get('edit/{id}', 'edit')->name('reserve.edit');
         Route::post('edit/{id}', 'update')->name('reserve.update');
         Route::get('delete/{id}', 'delete')->name('reserve.delete');
+    });
+
+    Route::controller(viewController::class)->prefix('visits')->group(function (){
+        Route::get('', 'show')->name('visits');
+        Route::post('add', 'save')->name('visits.save');
+        Route::get('edit/{id}', 'edit')->name('visits.edit');
+        Route::post('edit/{id}', 'update')->name('visits.update');
+        Route::get('delete/{id}', 'delete')->name('visits.delete');
+
     });
 
     Route::controller(viewController::class)->prefix('visits')->group(function (){

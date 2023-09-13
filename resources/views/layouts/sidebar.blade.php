@@ -43,6 +43,7 @@
             <span>Gestion des Visites</span></a>
     </li>
 
+
     @if (auth()->user()->level == 'Admin')
         <li class="nav-item">
             <a class="nav-link" href="/category">

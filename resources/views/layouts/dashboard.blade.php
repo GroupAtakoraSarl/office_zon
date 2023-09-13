@@ -65,7 +65,7 @@
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
 </a>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsDu3_rx4tO81YczzsN1qukrawSrngk3s&libraries=places"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsDu3_rx4tO81YczzsN1qukrawSrngk3s&callback=initMap"></script>
 <!-- Bootstrap core JavaScript-->
 <script src="{{ asset('https://startbootstrap.github.io/startbootstrap-sb-admin-2/vendor/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('https://startbootstrap.github.io/startbootstrap-sb-admin-2/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

@@ -118,5 +118,19 @@ class homeController extends Controller
         return $HomeCount;
     }
 
+    public function show($id)
+    {
+        $house = homes::find($id);
+
+        if (!$house) {
+            return response()->json(['error' => 'House not found'], 404);
+        }
+
+        return response()->json($house);
+    }
+
+
+
+
 
 }
