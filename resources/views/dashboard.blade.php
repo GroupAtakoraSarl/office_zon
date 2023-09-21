@@ -152,6 +152,28 @@
                         </tr>
                         </tbody>
                     </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-bordered narrow-table" style="margin-right: 20px;">
+                        <thead>
+                        <tr align="center">
+                            <th colspan="2"><h3>Parcelle enrégistrés</h3></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <h5><i class="fas fa-tree"></i> Nombre de parcelles </h5>
+                            </td>
+                            <td>{{ $TerrainCount }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

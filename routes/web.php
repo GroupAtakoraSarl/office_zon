@@ -55,8 +55,12 @@ Route::middleware('auth')->group(function () {
         $ReservationController = app(ReservationController::class);
         $ReserCount = $ReservationController->getReserCount();
 
+        $terrainMaps = app(terrainMaps::class);
+        $TerrainCount = $terrainMaps->getTerrainCount();
+
         return view('dashboard', ['categoryCount' => $categoryCount ,'HomeCount' => $HomeCount],
-            ['AdminCount' => $AdminCount,'ReserCount' => $ReserCount,'VisiterCount' => $VisiterCount]);
+            ['AdminCount' => $AdminCount,'ReserCount' => $ReserCount,
+            'VisiterCount' => $VisiterCount,'TerrainCount'=> $TerrainCount]);
     })->name('dashboard');
 
 
@@ -119,6 +123,17 @@ Route::middleware('auth')->group(function () {
         Route::get('delete/{id}', 'delete')->name('visits.delete');
 
     });
+
+    Route::controller(terrainMaps::class)->prefix('terrains')->group(function (){
+        Route::get('', 'index')->name('terrains');
+        Route::post('add', 'save')->name('terrains.save');
+        Route::get('edit/{id}', 'edit')->name('terrains.edit');
+        Route::post('edit/{id}', 'update')->name('terrains.update');
+        Route::get('delete/{id}', 'delete')->name('terrains.delete');
+
+    });
+
+
 
 });
 

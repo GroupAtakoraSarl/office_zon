@@ -42,8 +42,11 @@
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Gestion des Visites</span></a>
     </li>
-
-
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('terrains') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Gestion des terrains</span></a>
+    </li>
     @if (auth()->user()->level == 'Admin')
         <li class="nav-item">
             <a class="nav-link" href="/category">

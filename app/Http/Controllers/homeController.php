@@ -65,7 +65,6 @@ class homeController extends Controller
         }
 
         homes::create($data);
-
         return redirect()->route('homes');
     }
 
@@ -100,9 +99,7 @@ class homeController extends Controller
         } else {
             $data['path'] = 'default.jpg';
         }
-
         homes::find($id)->update($data);
-
         return redirect()->route('homes');
     }
 
@@ -118,19 +115,13 @@ class homeController extends Controller
         return $HomeCount;
     }
 
-    public function show($id)
+    public function shows($id)
     {
         $house = homes::find($id);
 
         if (!$house) {
             return response()->json(['error' => 'House not found'], 404);
         }
-
         return response()->json($house);
     }
-
-
-
-
-
 }

@@ -17,6 +17,10 @@
         </div>
     </form>
 
+    <div id="loading-spinner">
+        <div class="spinner"></div>
+    </div>
+
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
 
@@ -134,6 +138,32 @@
     #map {
         height: 400px;
     }
+    /* Ajoutez les styles pour le conteneur de la barre de progression */
+    #loading-spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 9999;
+    }
+
+    /* Ajoutez les styles pour l'animation de la barre de progression (spinner) */
+    .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.3);
+        border-radius: 50%;
+        border-top: 4px solid #007bff; /* Couleur de la barre de progression */
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite; /* Animation CSS personnalisée */
+    }
+
+    /* Définissez l'animation CSS pour la rotation du spinner */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
 </style>
 <div id="map"></div>
 <script type="text/javascript">
@@ -175,72 +205,75 @@
     }
 
     document.addEventListener("DOMContentLoaded", function (callback) {
-        initMap();
-        var positionCells = document.querySelectorAll('[data-position]');
+        var loadingSpinner = document.getElementById("loading-spinner");
 
-        if (positionCells.length > 0) {
-            var firstPosition = positionCells[0].getAttribute('data-position');
-            var [firstLng, firstLat] = extractLngLatFromPosition(firstPosition);
+        window.addEventListener("load", function () {
+            loadingSpinner.style.display = "none";
 
-            map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 5,
-                center: { lat: parseFloat(firstLat), lng: parseFloat(firstLng) },
-            });
+            initMap();
+            var positionCells = document.querySelectorAll('[data-position]');
 
+            if (positionCells.length > 0) {
+                var firstPosition = positionCells[0].getAttribute('data-position');
+                var [firstLng, firstLat] = extractLngLatFromPosition(firstPosition);
 
-            var markers = [];
-            var infoWindow = new google.maps.InfoWindow();
-
-
-            var elements = document.querySelectorAll('[data-id]');
-            var id = Array.from(elements).map(function (element) {
-                return element.getAttribute('data-id');
-            });
-            console.log(id);
-
-            positionCells.forEach(function (cell, index) {
-                // Récupérez l'ID pour cette itération de la boucle
-                var houseId = id[index];
-
-                var position = cell.getAttribute('data-position');
-                var [lng, lat] = extractLngLatFromPosition(position);
-
-                var marker = new google.maps.Marker({
-                    position: { lat: parseFloat(lat), lng: parseFloat(lng) },
-                    map: map,
+                map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 5,
+                    center: { lat: parseFloat(firstLat), lng: parseFloat(firstLng) },
                 });
 
-                google.maps.event.addListener(marker, 'click', function () {
-                    // Utilisation de la requête AJAX
-                    $.ajax({
-                        url: '/api/show/' + houseId,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function (data) {
-                            var content = getInfoWindowContent(data);
-                            infoWindow.setContent(content);
-                            infoWindow.open(map, marker);
-                        },
-                        error: function (xhr, status, error) {
-                            console.error(error);
-                        }
+
+                var markers = [];
+                var infoWindow = new google.maps.InfoWindow();
+
+
+                var elements = document.querySelectorAll('[data-id]');
+                var id = Array.from(elements).map(function (element) {
+                    return element.getAttribute('data-id');
+                });
+                console.log(id);
+
+                positionCells.forEach(function (cell, index) {
+                    // Récupérez l'ID pour cette itération de la boucle
+                    var houseId = id[index];
+
+                    var position = cell.getAttribute('data-position');
+                    var [lng, lat] = extractLngLatFromPosition(position);
+
+                    var marker = new google.maps.Marker({
+                        position: { lat: parseFloat(lat), lng: parseFloat(lng) },
+                        map: map,
                     });
+
+                    google.maps.event.addListener(marker, 'click', function () {
+                        // Utilisation de la requête AJAX
+                        $.ajax({
+                            url: '/api/shows/' + houseId,
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function (data) {
+                                var content = getInfoWindowContent(data);
+                                infoWindow.setContent(content);
+                                infoWindow.open(map, marker);
+                            },
+                            error: function (xhr, status, error) {
+                                console.error(error);
+                            }
+                        });
+                    });
+
+                    markers.push(marker);
                 });
 
-                markers.push(marker);
-            });
 
+            } else {
+                var defaultLat = 7.281255;
+                var defaultLng = 1.039647;
 
-        } else {
-            var defaultLat = 7.281255;
-            var defaultLng = 1.039647;
-
-            showMap(defaultLat, defaultLng);
-        }
-
+                showMap(defaultLat, defaultLng);
+            }
+        });
     });
-
-    // ...
 
     function getInfoWindowContent(data) {
         return `

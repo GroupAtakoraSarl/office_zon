@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\homeController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\terrainMaps;
 use App\Http\Controllers\viewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +25,9 @@ Route::post('/Admin/connexion',[AdminController::class,'connexion']);
 
 Route::get('/Admin/houses',[homeController::class,'store']);
 
-Route::get('/show/{id}',[homeController::class,'show']);
+Route::get('/shows/{id}',[homeController::class,'shows']);
+
+Route::get('/show/{id}',[terrainMaps::class,'show']);
 
 Route::post('/reservations/create',[ReservationController::class,"store"]);
 Route::get('/reservations/show',[ReservationController::class,"index"]);
