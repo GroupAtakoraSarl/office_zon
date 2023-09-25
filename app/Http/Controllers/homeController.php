@@ -124,4 +124,20 @@ class homeController extends Controller
         }
         return response()->json($house);
     }
+
+    public function search(Request $request)
+    {
+        $property = $request->input('property');
+        $results = homes::where('price', $property)->get();
+
+        if ($results->isEmpty()) {
+            return response()->json(['error' => 'Aucune maison trouvée'], 404);
+        }
+
+        return response()->json($results);
+
+    }
+
+
+
 }

@@ -25,6 +25,8 @@ Route::post('/Admin/connexion',[AdminController::class,'connexion']);
 
 Route::get('/Admin/houses',[homeController::class,'store']);
 
+Route::post('/search',[homeController::class,'search']);
+
 Route::get('/shows/{id}',[homeController::class,'shows']);
 
 Route::get('/show/{id}',[terrainMaps::class,'show']);
@@ -36,6 +38,7 @@ Route::delete('/reservations/{id}',[ReservationController::class,"destroy"]);
 Route::post('/view/create',[viewController::class,"store"]);
 Route::get('/view/show',[viewController::class,"index"]);
 Route::delete('/view/{id}',[viewController::class,"destroy"]);
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

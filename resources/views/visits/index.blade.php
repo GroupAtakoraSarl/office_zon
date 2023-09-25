@@ -29,13 +29,13 @@
                     @foreach ($data as $row)
                         <tr>
                             <th>{{ $no++ }}</th>
-                            <td>{{ $row->n }}</td>
                             <td>{{ $row->name }}</td>
                             <td>{{ $row->date_view }}</td>
                             <td>{{ $row->email }}</td>
                             <td>{{ $row->localisation }}</td>
-                            <td>{{ $row->periode }}</td>
                             <td>{{ $row->tel }}</td>
+                            <td>{{ $row->periode }}</td>
+
 
                             @if (auth()->user()->level == 'Admin')
                                 <td>

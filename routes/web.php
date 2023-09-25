@@ -64,6 +64,8 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
 
+
+
     Route::controller(homeController::class)->prefix('home')->group(function () {
         Route::get('', 'index')->name('homes');
         Route::get('add', 'add')->name('homes.add');
@@ -71,6 +73,7 @@ Route::middleware('auth')->group(function () {
         Route::get('edit/{id}', 'edit')->name('homes.edit');
         Route::post('edit/{id}', 'update')->name('homes.update');
         Route::get('delete/{id}', 'delete')->name('homes.delete');
+
     });
 
 

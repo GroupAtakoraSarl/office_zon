@@ -1,21 +1,34 @@
 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
+
     <!-- Sidebar Toggle (Topbar) -->
     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
         <i class="fa fa-bars"></i>
     </button>
 
-    <!-- Topbar Search -->
-    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+    <form id="search-form" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" method="POST" action="{{ url('/search') }}">
         <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+            <input type="text" class="form-control bg-light border-0 small" name="property" placeholder="Entrez le prix..." aria-label="Search" aria-describedby="basic-addon2">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="button">
-                    <i class="fas fa-search fa-sm" ></i>
+                <button id="searchButton" class="btn btn-primary" type="submit">
+                    <i class="fas fa-search fa-sm"></i>
                 </button>
             </div>
         </div>
     </form>
+
+    <!-- Conteneur pour l'info-bulle -->
+    <div id="search-tooltip" class="d-none">
+        <!-- Les résultats de la recherche seront affichés ici -->
+        <div id="spinner" class="d-none">
+            <i class="fas fa-spinner fa-spin"></i> Recherche en cours...
+        </div>
+    </div>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}" >
+
+
+
 
     <div id="loading-spinner">
         <div class="spinner"></div>
@@ -164,6 +177,45 @@
         100% { transform: rotate(360deg); }
     }
 
+    /* Style du spinner reach */
+    #spinner {
+        display: none; /* Masquez le spinner par défaut */
+        text-align: center;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.8); /* Arrière-plan semi-transparent */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000; /* Assurez-vous qu'il est au-dessus du reste du contenu */
+    }
+
+    .fa-spinner {
+        font-size: 24px; /* Taille de l'icône */
+        animation: spin 2s linear infinite; /* Animation de rotation */
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+
+    /* Styles pour l'info-bulle */
+    #search-tooltip {
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        font-size: 14px;
+        z-index: 1000;
+        display: none; /* Cachez initialement l'info-bulle */
+    }
+
+
 </style>
 <div id="map"></div>
 <script type="text/javascript">
@@ -176,7 +228,7 @@
             lng: lng
         };
         map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 5,
+            zoom: 10,
             center: myLatLng,
         });
 
@@ -199,8 +251,8 @@
 
     function initMap() {
 
-        var initialLat = 7.281255;
-        var initialLng = 1.039647;
+        var initialLat = 6.162857;
+        var initialLng = 1.228802;
         showMap(initialLat, initialLng);
     }
 
@@ -218,7 +270,7 @@
                 var [firstLng, firstLat] = extractLngLatFromPosition(firstPosition);
 
                 map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 5,
+                    zoom: 10,
                     center: { lat: parseFloat(firstLat), lng: parseFloat(firstLng) },
                 });
 
@@ -234,7 +286,7 @@
                 console.log(id);
 
                 positionCells.forEach(function (cell, index) {
-                    // Récupérez l'ID pour cette itération de la boucle
+
                     var houseId = id[index];
 
                     var position = cell.getAttribute('data-position');
@@ -272,6 +324,59 @@
 
                 showMap(defaultLat, defaultLng);
             }
+
+            const searchForm = document.getElementById('search-form');
+            const searchTooltip = document.getElementById('search-tooltip');
+            const spinner = document.getElementById('spinner');
+
+            searchForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const propertyValue = document.querySelector('input[name="property"]').value;
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                console.log(propertyValue);
+                console.log(csrfToken);
+
+                spinner.classList.remove('d-none');
+
+                // ...
+
+                try {
+                    const response = await fetch('/api/search', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        body: JSON.stringify({ property: propertyValue }),
+                    });
+
+                    if (response.ok) {
+                        const results = await response.json();
+                        console.log(results);
+                        if (results.length > 0) {
+                            let tooltipContent = '<ul>';
+                            results.forEach((result) => {
+                                tooltipContent += `<li>Price: ${result.price}, Description: ${result.description}</li>`;
+                            });
+                            tooltipContent += '</ul>';
+                            searchTooltip.innerHTML = tooltipContent;
+                            searchTooltip.classList.remove('d-none');
+                        } else {
+                            // Aucun résultat trouvé, masquer l'infobulle
+                            searchTooltip.innerHTML = 'Aucun résultat trouvé';
+                            searchTooltip.classList.remove('d-none');
+                        }
+
+                    } else {
+                        console.error('Erreur de réponse du serveur');
+                    }
+                } finally {
+                    spinner.classList.add('d-none');
+                }
+
+            });
+
         });
     });
 
@@ -293,7 +398,5 @@
         var lat = parseFloat(position.match(/LNG(-?\d+\.\d+),LAT(-?\d+\.\d+)/)[2]);
         return [lng, lat];
     }
-
-
 
 </script>
